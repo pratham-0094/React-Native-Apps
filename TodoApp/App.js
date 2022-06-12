@@ -6,107 +6,142 @@
  * @flow strict-local
  */
 
-import React from 'react';
-import type {Node} from 'react';
+import React, {useState} from 'react';
 import {
-  SafeAreaView,
   ScrollView,
-  StatusBar,
+  TextInput,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
+  TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  const [task, setTask] = useState('');
+  const [todo, setTodo] = useState([
+    {title: 'sdksd', done: false},
+    {title: 'sdksd', done: true},
+    {title: 'sdksd', done: true},
+    {title: 'sdksd', done: false},
+  ]);
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const addTask = () => {
+    if (task.length) {
+      setTodo([...todo, {title: task, done: false}]);
+      setTask('');
+      Keyboard.dismiss();
+    }
+  };
+
+  const deleteTask = index => {
+    const tempTodo = [...todo];
+    tempTodo.splice(index, 1);
+    setTodo(tempTodo);
+  };
+
+  const markDone = index => {
+    const tempTodo = [...todo];
+    tempTodo[index].done = !tempTodo[index].done;
+    setTodo(tempTodo);
+  };
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={[styles.container]}>
+      <Text style={[styles.heading]}>Todo's</Text>
+      <ScrollView style={[styles.list]}>
+        <View>
+          {todo.map((e, i) => (
+            <View style={[styles.todo]} key={i}>
+              <TouchableOpacity
+                onPress={() => {
+                  markDone(i);
+                }}
+                style={[{flexDirection: 'row', alignItems: 'center'}]}>
+                {e.done && (
+                  <Text style={[{fontSize: 20, marginRight: 5}]}>+</Text>
+                )}
+                <Text style={[styles.todoItem, {color: e.done ? 'red' : 'black'}]}>
+                  {e.title}
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  deleteTask(i);
+                }}
+                style={[styles.delete]}>
+                <Text style={[{fontSize: 20, fontWeight: 'bold'}]}>-</Text>
+              </TouchableOpacity>
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+      <View style={[styles.addBar]}>
+        <TextInput
+          style={[styles.input]}
+          value={task}
+          onChangeText={text => setTask(text)}></TextInput>
+        <TouchableOpacity onPress={addTask} style={[styles.addButton]}>
+          <Text style={[{fontSize: 30}]}>+</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
 
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  todo: {
+    backgroundColor: 'lightgray',
+    borderRadius: 30,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    margin: 10,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  todoItem: {
+    color: 'lightgray',
+    fontSize: 20,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  heading: {
+    color: 'red',
+    fontSize: 25,
+    marginLeft: 8,
+    marginVertical: 5,
   },
-  highlight: {
-    fontWeight: '700',
+  list: {
+    flexDirection: 'column',
+    paddingVertical: 10,
+    backgroundColor: 'yellow',
   },
+  input: {
+    backgroundColor: 'lightgray',
+    borderRadius: 30,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    width: '85%',
+  },
+  container: {
+    height: '100%',
+  },
+  addBar: {
+    justifyContent: 'flex-end',
+    flexDirection: 'row',
+    marginHorizontal: 10,
+    marginVertical: 10,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  addButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'gray',
+    borderRadius: 30,
+    height: 48,
+    width: 48,
+  },
+  delete: {},
 });
 
 export default App;
