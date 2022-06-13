@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, StyleSheet, Text, Image, View} from 'react-native';
 
-const Category = ({}) => {
+const Category = ({route}) => {
   const [list, setList] = useState([]);
 
   const fetchList = () => {
