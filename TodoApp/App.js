@@ -19,12 +19,7 @@ import {
 
 const App = () => {
   const [task, setTask] = useState('');
-  const [todo, setTodo] = useState([
-    {title: 'sdksd', done: false},
-    {title: 'sdksd', done: true},
-    {title: 'sdksd', done: true},
-    {title: 'sdksd', done: false},
-  ]);
+  const [todo, setTodo] = useState([]);
 
   const addTask = () => {
     if (task.length) {
@@ -61,7 +56,8 @@ const App = () => {
                 {e.done && (
                   <Text style={[{fontSize: 20, marginRight: 5}]}>+</Text>
                 )}
-                <Text style={[styles.todoItem, {color: e.done ? 'red' : 'black'}]}>
+                <Text
+                  style={[styles.todoItem, {color: e.done ? 'red' : 'black'}]}>
                   {e.title}
                 </Text>
               </TouchableOpacity>
